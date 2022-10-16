@@ -97,6 +97,27 @@ jobs:
           tar czf "$staging.tar.gz" "$staging"
           echo "ASSET=$staging.tar.gz" >> $GITHUB_ENV
 
+      - name: Create Debian package
+        shell: bash
+        if: startsWith(matrix.job.os, 'ubuntu')
+        run: |
+          cargo install cargo-deb
+          cargo deb
+          case ${{ matrix.job.target }} in
+            aarch64-*-linux-*) DPKG_ARCH=arm64 ;;
+            arm-*-linux-*hf) DPKG_ARCH=armhf ;;
+            i686-*-linux-*) DPKG_ARCH=i686 ;;
+            x86_64-*-linux-*) DPKG_ARCH=amd64 ;;
+            *) DPKG_ARCH=notset ;;
+          esac;
+          PROJECT_NAME = "trippy"
+          PKG_BASENAME = ${PROJECT_NAME}-v${TRIP_VERSION}-${{ matrix.job.target }}
+          DPKG_NAME="${PROJECT_NAME}_${TRIP_VERSION}_${DPKG_ARCH}.deb"
+          DPKG_PATH="debian/${PKG_BASENAME}.deb"
+          DPKG_PATH="debian/${DPKG_NAME}"
+          echo ::set-output name=DPKG_NAME::${DPKG_NAME}
+          echo ::set-output name=DPKG_PATH::${DPKG_PATH}
+
       - name: Upload release archive
         uses: actions/upload-release-asset@v1.0.1
         env:
