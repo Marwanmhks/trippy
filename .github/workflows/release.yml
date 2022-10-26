@@ -112,6 +112,9 @@ jobs:
           PKG_BASENAME ="trippy-v${TRIP_VERSION}-${{ matrix.target }}"
           DPKG_NAME="trippy_${TRIP_VERSION}-dev_${DPKG_ARCH}.deb"
           DPKG_PATH="debian/${PKG_BASENAME}"
+          echo ${PKG_BASENAME}
+          echo ${DPKG_NAME}
+          echo ${DPKG_PATH}
           echo ::set-output name=DPKG_NAME::${DPKG_NAME}
           echo ::set-output name=DPKG_PATH::${DPKG_PATH}
           cargo deb
