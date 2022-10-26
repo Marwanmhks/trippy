@@ -102,7 +102,6 @@ jobs:
         if: startsWith(matrix.os, 'ubuntu')
         run: |
           cargo install cargo-deb
-          cargo deb
           case ${{ matrix.target }} in
             aarch64-*-linux-*) DPKG_ARCH=arm64 ;;
             arm-*-linux-*hf) DPKG_ARCH=armhf ;;
@@ -112,8 +111,11 @@ jobs:
           esac;
           PROJECT_NAME = "trippy"
           PKG_BASENAME = ${PROJECT_NAME}-v${TRIP_VERSION}-${{ matrix.target }}
-          DPKG_NAME="${PROJECT_NAME}_${TRIP_VERSION}_${DPKG_ARCH}"
-          
+          DPKG_NAME="${PROJECT_NAME}_${TRIP_VERSION}-dev_${DPKG_ARCH}.deb"
+          DPKG_PATH="debian/${PKG_BASENAME}"
+          echo ::set-output name=DPKG_NAME::${DPKG_NAME}
+          echo ::set-output name=DPKG_PATH::${DPKG_PATH}
+          cargo deb
 
       - name: Upload Deb Artifact
         uses: actions/upload-artifact@v3
