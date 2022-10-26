@@ -113,10 +113,19 @@ jobs:
           PROJECT_NAME = "trippy"
           PKG_BASENAME = ${PROJECT_NAME}-v${TRIP_VERSION}-${{ matrix.job.target }}
           DPKG_NAME="${PROJECT_NAME}_${TRIP_VERSION}_${DPKG_ARCH}.deb"
-          DPKG_PATH="debian/${PKG_BASENAME}.deb"
-          DPKG_PATH="debian/${DPKG_NAME}"
+          DPKG_PATH="debian/${PKG_BASENAME}"
           echo ::set-output name=DPKG_NAME::${DPKG_NAME}
           echo ::set-output name=DPKG_PATH::${DPKG_PATH}
+
+      - name: Upload Debian Artifact
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ./${DPKG_PATH}
+          asset_name: ${DPKG_NAME}
+          asset_content_type: application/vnd.debian.binary-package
 
       - name: Upload release archive
         uses: actions/upload-release-asset@v1.0.1
