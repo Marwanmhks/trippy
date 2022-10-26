@@ -98,12 +98,28 @@ jobs:
           echo "ASSET=$staging.tar.gz" >> $GITHUB_ENV
 
       - name: Create Debian package
-        uses: ebbflow-io/cargo-deb-armv7-debian@1.47.0-1
+        shell: bash
+        if: startsWith(matrix.os, 'ubuntu')
+        run: |
+          cargo install cargo-deb
+          cargo deb
+          case ${{ matrix.target }} in
+            aarch64-*-linux-*) DPKG_ARCH=arm64 ;;
+            arm-*-linux-*hf) DPKG_ARCH=armhf ;;
+            i686-*-linux-*) DPKG_ARCH=i686 ;;
+            x86_64-*-linux-*) DPKG_ARCH=amd64 ;;
+            *) DPKG_ARCH=notset ;;
+          esac;
+          PROJECT_NAME = "trippy"
+          PKG_BASENAME = ${PROJECT_NAME}-v${TRIP_VERSION}-${{ matrix.target }}
+          DPKG_NAME="${PROJECT_NAME}_${TRIP_VERSION}_${DPKG_ARCH}"
+          
+
       - name: Upload Deb Artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
-          name: amd64deb
-          path: ./target/armv7-unknown-linux-musleabih/debian/*
+          name: ${DPKG_NAME}
+          path: ./target/debian/*
 
       - name: Upload release archive
         uses: actions/upload-release-asset@v1.0.1
