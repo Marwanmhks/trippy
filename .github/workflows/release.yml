@@ -102,7 +102,6 @@ jobs:
         if: startsWith(matrix.job.os, 'ubuntu')
         run: |
           cargo install cargo-deb
-          cargo deb
           case ${{ matrix.job.target }} in
             aarch64-*-linux-*) DPKG_ARCH=arm64 ;;
             arm-*-linux-*hf) DPKG_ARCH=armhf ;;
@@ -116,16 +115,10 @@ jobs:
           DPKG_PATH="debian/${PKG_BASENAME}"
           echo ::set-output name=DPKG_NAME::${DPKG_NAME}
           echo ::set-output name=DPKG_PATH::${DPKG_PATH}
-
-      - name: Upload Debian Artifact
-        uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: ./${DPKG_PATH}
-          asset_name: ${DPKG_NAME}
-          asset_content_type: application/vnd.debian.binary-package
+          cargo deb --target=${DPKG_ARCH}
+          mkdir -p "$DPKG_PATH"
+          cp "target/${DPKG_ARCH}/debian" "$DPKG_PATH/"
+          echo "ASSET=$DPKG_NAME" >> $GITHUB_ENV
 
       - name: Upload release archive
         uses: actions/upload-release-asset@v1.0.1
