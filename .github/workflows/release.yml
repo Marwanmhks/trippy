@@ -109,7 +109,7 @@ jobs:
             x86_64-*-linux-*) DPKG_ARCH=amd64 ;;
             *) DPKG_ARCH=notset ;;
           esac;
-          PKG_BASENAME ="trippy-v${TRIP_VERSION}-${{ matrix.target }}""
+          PKG_BASENAME ="trippy-v${TRIP_VERSION}-${{ matrix.target }}"
           DPKG_NAME="trippy_${TRIP_VERSION}-dev_${DPKG_ARCH}.deb"
           DPKG_PATH="debian/${PKG_BASENAME}"
           echo ::set-output name=DPKG_NAME::${DPKG_NAME}
