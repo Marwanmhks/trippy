@@ -111,13 +111,13 @@ jobs:
           esac;
           PROJECT_NAME = "trippy"
           PKG_BASENAME = ${PROJECT_NAME}-v${TRIP_VERSION}-${{ matrix.job.target }}
-          DPKG_NAME="${PROJECT_NAME}_${TRIP_VERSION}_${DPKG_ARCH}.deb"
+          DPKG_NAME="${PROJECT_NAME}_${TRIP_VERSION}-dev_${DPKG_ARCH}.deb"
           DPKG_PATH="debian/${PKG_BASENAME}"
           echo ::set-output name=DPKG_NAME::${DPKG_NAME}
           echo ::set-output name=DPKG_PATH::${DPKG_PATH}
-          cargo deb --target=${DPKG_ARCH}
+          cargo deb
           mkdir -p "$DPKG_PATH"
-          cp "target/${DPKG_ARCH}/debian" "$DPKG_PATH/"
+          cp "target/debian" "$DPKG_PATH/"
           echo "ASSET=$DPKG_NAME" >> $GITHUB_ENV
 
       - name: Upload release archive
