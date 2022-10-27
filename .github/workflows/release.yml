@@ -123,6 +123,7 @@ jobs:
           path: ./target/debian/*
 
       - name: Upload Deb Release Asset
+        if: startsWith(matrix.os, 'ubuntu')
         uses: actions/upload-release-asset@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
