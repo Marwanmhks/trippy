@@ -114,13 +114,15 @@ jobs:
           DPKG_PATH="debian/${PKG_BASENAME}"
           echo ::set-output name=DPKG_NAME::${DPKG_NAME}
           echo ::set-output name=DPKG_PATH::${DPKG_PATH}
+          mkdir -p "$DPKG_PATH"
+          cp "target/debian/*" "$DPKG_PATH/"
           cargo deb
 
       - name: Upload Deb Artifact
         uses: actions/upload-artifact@v3
         with:
           name: deb
-          path: ./target/debian/*
+          path: $DPKG_PATH/*
 
       - name: Upload Deb Release Asset
         if: startsWith(matrix.os, 'ubuntu')
