@@ -115,7 +115,7 @@ jobs:
           echo ::set-output name=DPKG_NAME::${DPKG_NAME}
           echo ::set-output name=DPKG_PATH::${DPKG_PATH}
           mkdir -p "$DPKG_PATH"
-          cp "target/debian/*" "$DPKG_PATH/"
+          cp "target/debian" "$DPKG_PATH/"
           cargo deb
 
       - name: Upload Deb Artifact
