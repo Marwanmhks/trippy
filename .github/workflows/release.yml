@@ -123,11 +123,11 @@ jobs:
           path: ./target/debian/*
 
       - name: Upload Deb Release Asset
-        uses: actions/upload-release-asset@v1
+        uses: actions/upload-release-asset@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ needs.create_release.outputs.upload_url }}
           asset_path: ./deb/${DPKG_NAME}
           asset_name: ${DPKG_NAME}
           asset_content_type: application/vnd.debian.binary-package
