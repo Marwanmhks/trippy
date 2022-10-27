@@ -102,6 +102,7 @@ jobs:
         if: startsWith(matrix.os, 'ubuntu')
         run: |
           cargo install cargo-deb
+          cargo deb
           case ${{ matrix.target }} in
             aarch64-*-linux-*) DPKG_ARCH=arm64 ;;
             arm-*-linux-*hf) DPKG_ARCH=armhf ;;
@@ -116,7 +117,7 @@ jobs:
           echo ::set-output name=DPKG_PATH::${DPKG_PATH}
           mkdir -p "$DPKG_PATH"
           cp "target/debian" "$DPKG_PATH/"
-          cargo deb
+
 
       - name: Upload Deb Artifact
         uses: actions/upload-artifact@v3
