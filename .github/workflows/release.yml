@@ -119,8 +119,18 @@ jobs:
       - name: Upload Deb Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: ${DPKG_NAME}
+          name: deb
           path: ./target/debian/*
+
+      - name: Upload Deb Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./deb/${DPKG_NAME}
+          asset_name: ${DPKG_NAME}
+          asset_content_type: application/vnd.debian.binary-package
 
       - name: Upload release archive
         uses: actions/upload-release-asset@v1.0.1
