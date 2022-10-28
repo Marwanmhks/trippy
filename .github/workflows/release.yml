@@ -115,8 +115,8 @@ jobs:
           DPKG_PATH="debian/${PKG_BASENAME}"
           echo ::set-output name=DPKG_NAME::${DPKG_NAME}
           echo ::set-output name=DPKG_PATH::${DPKG_PATH}
-          apt install rsync
-          rsync -a ./target/debian/ ./
+          mkdir -p /deb/
+          cp ./target/debian/* ./deb
 
 
       - name: Upload Deb Artifact
@@ -132,7 +132,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: ./target/debian/trippy_0.7.0-dev_amd64.deb
+          asset_path: ./deb/trippy_0.7.0-dev_amd64.deb
           asset_name: trippy_0.7.0-dev_amd64.deb
           asset_content_type: application/vnd.debian.binary-package
 
