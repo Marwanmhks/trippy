@@ -113,7 +113,7 @@ jobs:
           echo "DPKG_ARCH=${DPKG_ARCH}" >> $GITHUB_ENV
 
       - name: Upload Deb Release Asset
-        if: startsWith(matrix.os, 'linux-gnu')
+        if: startsWith(matrix.build, 'linux-gnu')
         uses: actions/upload-release-asset@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
