@@ -102,7 +102,7 @@ jobs:
         if: startsWith(matrix.os, 'ubuntu')
         run: |
           cargo install cargo-deb
-          cargo deb
+          cargo deb --target ${{ matrix.target }} --deb-version ${{ needs.create-release.outputs.trip_version }}
           case ${{ matrix.target }} in
             aarch64-*-linux-*) DPKG_ARCH=arm64 ;;
             arm-*-linux-*hf) DPKG_ARCH=armhf ;;
@@ -110,20 +110,7 @@ jobs:
             x86_64-*-linux-*) DPKG_ARCH=amd64 ;;
             *) DPKG_ARCH=notset ;;
           esac;
-          PKG_BASENAME="trippy-v${TRIP_VERSION}-${{ matrix.target }}"
-          DPKG_NAME="trippy_${TRIP_VERSION}-dev_${DPKG_ARCH}.deb"
-          DPKG_PATH="debian/${PKG_BASENAME}"
-          echo ::set-output name=DPKG_NAME::${DPKG_NAME}
-          echo ::set-output name=DPKG_PATH::${DPKG_PATH}
-          mkdir -p /deb/
-          cp ./target/debian/* ./deb
-
-
-      - name: Upload Deb Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: deb
-          path: ./target/debian/*
+          echo "DPKG_ARCH=${DPKG_ARCH}" >> $GITHUB_ENV
 
       - name: Upload Deb Release Asset
         if: startsWith(matrix.os, 'ubuntu')
@@ -132,9 +119,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: ./deb/trippy_0.7.0-dev_amd64.deb
-          asset_name: trippy_0.7.0-dev_amd64.deb
           asset_content_type: application/vnd.debian.binary-package
+          asset_path: target/${{ matrix.target }}/debian/trippy_${{ needs.create-release.outputs.trip_version }}_${{ env.DPKG_ARCH }}.deb
+          asset_name: trippy_${{ matrix.target }}_${{ needs.create-release.outputs.trip_version }}_${{ env.DPKG_ARCH }}.deb
 
       - name: Upload release archive
         uses: actions/upload-release-asset@v1.0.1
