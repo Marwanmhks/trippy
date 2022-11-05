@@ -99,7 +99,7 @@ jobs:
 
       - name: Create Debian package
         shell: bash
-        if: startsWith(matrix.build, 'linux')
+        if: startsWith(matrix.build, 'linux-gnu')
         run: |
           cargo install cargo-deb
           cargo deb --target ${{ matrix.target }} --deb-version ${{ needs.create-release.outputs.trip_version }}
@@ -113,7 +113,7 @@ jobs:
           echo "DPKG_ARCH=${DPKG_ARCH}" >> $GITHUB_ENV
 
       - name: Upload Deb Release Asset
-        if: startsWith(matrix.os, 'linux')
+        if: startsWith(matrix.os, 'linux-gnu')
         uses: actions/upload-release-asset@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
